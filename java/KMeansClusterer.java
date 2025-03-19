@@ -169,11 +169,50 @@ public class KMeansClusterer {
 	
 	/**
 	 * Perform k-means clustering with Forgy initialization and return the 0-based cluster assignments for corresponding data points.
-	 * If iter &gt; 1, choose the clustering that minimizes the WCSS measure.
-	 * If kMin &lt; kMax, select the k maximizing the gap statistic using 100 uniform samples uniformly across given data ranges.
+	 * If iter < 1, choose the clustering that minimizes the WCSS measure.
+	 * If kMin > kMax, select the k maximizing the gap statistic using 100 uniform samples uniformly across given data ranges.
 	 */
 	public void kMeansCluster() {
-		// TODO - implement
+		//Pick k clusters from data; Forgy Initialization is random datapoints
+		int[] points = new int[k]; //Makes sure multiple clusters don't have the same center
+		int clusterIndex = 0; //Data point location for center
+
+		for(int i = 0; i < k; i++){ //Get k centers
+			Boolean goodToGo = false; //Variable to ensure program doesn't move unless center is valid
+			while(!goodToGo){
+				goodToGo = true; //Assume center is valid
+				clusterIndex = random.nextInt(0, data.length); //Get random point of data
+				//Check to see if center has been already used
+				for(int point : points){
+					if(clusterIndex == point){
+						goodToGo = false; //Need new center
+					}
+				}
+			}
+			//If reached here, center hasn't been used
+			points[i] = clusterIndex;
+			//Assign data at random point to be a centroid
+			centroids[i][0] = data[clusterIndex][0];
+			centroids[i][1] = data[clusterIndex][1];
+		}
+		Boolean converged = false; //Assume not converged
+		int iterationLimit = 100; //Limit to make sure it doesn't go crazy
+		int iterations = 0;
+		do{
+			//Assign each point to its closest center
+			if(assignNewClusters()){
+				//If true, assignments changed
+				//Recompute centers by averaging clustered points
+				computeNewCentroids();
+				iterations++;
+				if(iterations >= iterationLimit){
+					converged = true; //Assume we're stuck in a loop somewhere and forcibly exit
+				}
+			} else {
+				//Assignments didn't change, no need to recompute centers
+				converged = true; //If assignments didn't change, the clusters should be converged
+			}
+		}while(!converged); //Check should be at the end
 	}
 	
 	/**
