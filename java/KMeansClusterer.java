@@ -148,8 +148,35 @@ public class KMeansClusterer {
 	 * @return the minimum Within-Clusters Sum-of-Squares measure
 	 */
 	public double getWCSS() {
-		// TODO - implement
+		double totalWCSS = 0.0;
+		
+		// creates an array to store wcss (within cluster sum of squares) for each cluster
+		double[] clusterWCSS = new double[k];
+		
+		// iterate over each data point
+		for (int i = 0; i < data.length; i++) {
+			int clusterIndex = clusters[i]; 
+			double[] centroid = centroids[clusterIndex]; 
+			
+			// compute the squared distance to the centroid
+			double squaredDistance = 0.0;
+			for (int j = 0; j < dim; j++) {
+				double diff = data[i][j] - centroid[j];
+				squaredDistance += diff * diff;
+			}
+			
+			// add squared distance to the corresponding cluster's wcss
+			clusterWCSS[clusterIndex] += squaredDistance;
+		}
+		
+		// sum up wcss values of all clusters to get the total wcss
+		for (double wcss : clusterWCSS) {
+			totalWCSS += wcss;
+		}
+		
+		return totalWCSS;
 	}
+	
 
 	/**
 	 * Assign each data point to the nearest centroid and return whether or not any cluster assignments changed.
