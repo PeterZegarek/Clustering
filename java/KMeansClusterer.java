@@ -183,7 +183,27 @@ public class KMeansClusterer {
 	 * @return whether or not any cluster assignments changed
 	 */
 	public boolean assignNewClusters() {
-		// TODO - implement
+		boolean changesMade = false;
+		for(int i = 0; i < data.length; i++) {
+			// the original assigned cluster for this point
+			int originalCluster = clusters[i];
+
+			// check the straight line distance to each centroid
+			double shortestDistance = Double.MAX_VALUE;
+			for(int j = 0; j < centroids.length; j++) {
+				double distance = getDistance(data[i], centroids[j]);
+				// if the shortest, update info
+				if (distance < shortestDistance) {
+					shortestDistance = distance;
+					clusters[i] = j;
+				}
+			}
+			// if these are not the same value, we made changes
+			if (originalCluster != clusters[i]) {
+				changesMade = true;
+			}
+		}
+		return changesMade;
 	}
 	
 	/**
