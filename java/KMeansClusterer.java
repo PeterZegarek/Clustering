@@ -248,6 +248,9 @@ public class KMeansClusterer {
 		//Pick k clusters from data; Forgy Initialization is random datapoints
 		int[] points = new int[k]; //Makes sure multiple clusters don't have the same center
 		int clusterIndex = 0; //Data point location for center
+		// init arrays
+		centroids = new double[data.length][2];
+		clusters = new int[data.length];
 
 		for(int i = 0; i < k; i++){ //Get k centers
 			Boolean goodToGo = false; //Variable to ensure program doesn't move unless center is valid
