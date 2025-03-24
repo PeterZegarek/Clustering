@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
@@ -250,6 +251,7 @@ public class KMeansClusterer {
 	public void kMeansCluster() {
 		//Pick k clusters from data; Forgy Initialization is random datapoints
 		int[] points = new int[k]; //Makes sure multiple clusters don't have the same center
+		Arrays.fill(points, -1); // Initialize with -1 to avoid false collisions
 		int clusterIndex = 0; //Data point location for center
 		// init arrays
 		centroids = new double[k][2];
@@ -260,7 +262,7 @@ public class KMeansClusterer {
 			while(!goodToGo){
 				goodToGo = true; //Assume center is valid
 				clusterIndex = random.nextInt(0, data.length); //Get random point of data
-				//Check to see if center has been already used
+				//Check to see if center has been already used 
 				for(int point : points){
 					if(clusterIndex == point){
 						goodToGo = false; //Need new center
@@ -273,19 +275,13 @@ public class KMeansClusterer {
 			centroids[i][0] = data[clusterIndex][0];
 			centroids[i][1] = data[clusterIndex][1];
 		}
-		Boolean converged = false; //Assume not converged
-		int iterationLimit = 100; //Limit to make sure it doesn't go crazy
-		int iterations = 0;
+		boolean converged = false; //Assume not converged
 		do{
 			//Assign each point to its closest center
 			if(assignNewClusters()){
 				//If true, assignments changed
 				//Recompute centers by averaging clustered points
 				computeNewCentroids();
-				iterations++;
-				if(iterations >= iterationLimit){
-					converged = true; //Assume we're stuck in a loop somewhere and forcibly exit
-				}
 			} else {
 				//Assignments didn't change, no need to recompute centers
 				converged = true; //If assignments didn't change, the clusters should be converged
