@@ -1,0 +1,6 @@
+Question 1:
+    1a. The k-means algorithm makes the assumptions that all the data is a double, each line of data is of the same dimension, there is a
+    predifined number of clusters beforehand, and Euclidean distance can be calculated from the data.
+    1b. 
+    1c.
+    1d. 
