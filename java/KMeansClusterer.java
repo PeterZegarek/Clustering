@@ -211,20 +211,23 @@ public class KMeansClusterer {
 	 */
 	public void computeNewCentroids() 
 	{
-		double[][] newCentroids = new double[k][dim];
-		int[] clusterSizes = new int[k];
+		double[][] newCentroids = new double[k][dim]; //2D array that will hold new centroids
+		int[] clusterSizes = new int[k]; //array of the sizes of each cluster
 		
+		//goes through each data point, finds its assigned cluster, and increments that cluster
 		for(int dataIndex = 0; dataIndex < data.length; dataIndex++)
 		{
 			int clusterIndex = clusters[dataIndex];
 			clusterSizes[clusterIndex] += 1;
 			
+			//adds each data point to the centroid that it matches
 			for(int dimensionIndex = 0; dimensionIndex < dim; dimensionIndex++)
 			{
 				newCentroids[clusterIndex][dimensionIndex] += data[dataIndex][dimensionIndex];
 			}
 		}
 
+		//calculates each cluster's mean 
 		for(int clusterIndex = 0; clusterIndex < k; clusterIndex++)
 		{
 			if (clusterSizes[clusterIndex] > 0)
@@ -235,7 +238,7 @@ public class KMeansClusterer {
 				}
 			}
 		}
-		centroids = newCentroids;
+		centroids = newCentroids; //replaces old centroids with new ones
 	}
 
 	
