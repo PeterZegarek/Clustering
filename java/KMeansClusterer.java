@@ -214,22 +214,22 @@ public class KMeansClusterer {
 		double[][] newCentroids = new double[k][dim];
 		int[] clusterSizes = new int[k];
 		
-		for(int dataIndex = 0; dataIndex < data.length - 1; dataIndex++)
+		for(int dataIndex = 0; dataIndex < data.length; dataIndex++)
 		{
 			int clusterIndex = clusters[dataIndex];
 			clusterSizes[clusterIndex] += 1;
 			
-			for(int dimensionIndex = 0; dimensionIndex < dim -1; dimensionIndex++)
+			for(int dimensionIndex = 0; dimensionIndex < dim; dimensionIndex++)
 			{
 				newCentroids[clusterIndex][dimensionIndex] += data[dataIndex][dimensionIndex];
 			}
 		}
 
-		for(int clusterIndex = 0; clusterIndex < k - 1; clusterIndex++)
+		for(int clusterIndex = 0; clusterIndex < k; clusterIndex++)
 		{
 			if (clusterSizes[clusterIndex] > 0)
 			{
-				for(int dimensionIndex = 0; dimensionIndex < dim - 1; dimensionIndex++)
+				for(int dimensionIndex = 0; dimensionIndex < dim; dimensionIndex++)
 				{
 					newCentroids[clusterIndex][dimensionIndex] /= clusterSizes[clusterIndex];
 				}
@@ -249,11 +249,11 @@ public class KMeansClusterer {
 		int[] points = new int[k]; //Makes sure multiple clusters don't have the same center
 		int clusterIndex = 0; //Data point location for center
 		// init arrays
-		centroids = new double[data.length][2];
+		centroids = new double[k][2];
 		clusters = new int[data.length];
 
 		for(int i = 0; i < k; i++){ //Get k centers
-			Boolean goodToGo = false; //Variable to ensure program doesn't move unless center is valid
+			boolean goodToGo = false; //Variable to ensure program doesn't move unless center is valid
 			while(!goodToGo){
 				goodToGo = true; //Assume center is valid
 				clusterIndex = random.nextInt(0, data.length); //Get random point of data
