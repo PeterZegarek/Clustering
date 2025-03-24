@@ -310,7 +310,6 @@ public class KMeansClusterer2 {
             }
         }
         // given lowest, update instance variables to that of the lowest wcss
-        System.out.println(lowestWCSSIndex);
         this.centroids = clusteringResults[lowestWCSSIndex].finalCentroids;
         this.clusters = clusteringResults[lowestWCSSIndex].finalClusters;
         
@@ -427,7 +426,6 @@ public class KMeansClusterer2 {
 
         ClusteringResult() {
             this.wcss = getWCSS();
-            System.out.println(getWCSS());
             this.finalData = data;
             this.finalCentroids = centroids;
             this.finalClusters = clusters;
