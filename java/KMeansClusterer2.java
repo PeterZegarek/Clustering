@@ -12,7 +12,7 @@ import java.util.Scanner;
  * KMeansClusterer.java - a JUnit-testable interface for the Model AI Assignments k-Means Clustering exercises.
  * @author Todd W. Neller
  */
-public class KMeansClusterer {
+public class KMeansClusterer2 {
 	private int dim; // the number of dimensions in the data
 	private int k, kMin, kMax; // the allowable range of the of clusters
 	private int iter; // the number of k-Means Clustering iterations per k
@@ -21,6 +21,8 @@ public class KMeansClusterer {
 	private int[] clusters; // assigned clusters for each data point
 	private Random random = new Random();
 
+    // store the clustering results
+    private ClusteringResult[] clusteringResults;
 
 	/**
 	 * Read the specified data input format from the given file and return a double[][] with each row being a data point and each column being a dimension of the data.
@@ -212,23 +214,20 @@ public class KMeansClusterer {
 	 */
 	public void computeNewCentroids() 
 	{
-		double[][] newCentroids = new double[k][dim]; //2D array that will hold new centroids
-		int[] clusterSizes = new int[k]; //array of the sizes of each cluster
+		double[][] newCentroids = new double[k][dim];
+		int[] clusterSizes = new int[k];
 		
-		//goes through each data point, finds its assigned cluster, and increments that cluster
 		for(int dataIndex = 0; dataIndex < data.length; dataIndex++)
 		{
 			int clusterIndex = clusters[dataIndex];
 			clusterSizes[clusterIndex] += 1;
 			
-			//adds each data point to the centroid that it matches
 			for(int dimensionIndex = 0; dimensionIndex < dim; dimensionIndex++)
 			{
 				newCentroids[clusterIndex][dimensionIndex] += data[dataIndex][dimensionIndex];
 			}
 		}
 
-		//calculates each cluster's mean 
 		for(int clusterIndex = 0; clusterIndex < k; clusterIndex++)
 		{
 			if (clusterSizes[clusterIndex] > 0)
@@ -239,7 +238,7 @@ public class KMeansClusterer {
 				}
 			}
 		}
-		centroids = newCentroids; //replaces old centroids with new ones
+		centroids = newCentroids;
 	}
 
 	
@@ -249,44 +248,72 @@ public class KMeansClusterer {
 	 * If kMin > kMax, select the k maximizing the gap statistic using 100 uniform samples uniformly across given data ranges.
 	 */
 	public void kMeansCluster() {
-		//Pick k clusters from data; Forgy Initialization is random datapoints
-		int[] points = new int[k]; //Makes sure multiple clusters don't have the same center
-		Arrays.fill(points, -1); // Initialize with -1 to avoid false collisions
-		int clusterIndex = 0; //Data point location for center
-		// init arrays
-		centroids = new double[k][2];
-		clusters = new int[data.length];
+        // create array of clustering results
+        clusteringResults = new ClusteringResult[iter];
+        // run iter amount of times and store clustering result
+        for (int runs = 0; runs < iter; runs++) {
+            // typical kMeansCluster algo
 
-		for(int i = 0; i < k; i++){ //Get k centers
-			boolean goodToGo = false; //Variable to ensure program doesn't move unless center is valid
-			while(!goodToGo){
-				goodToGo = true; //Assume center is valid
-				clusterIndex = random.nextInt(0, data.length); //Get random point of data
-				//Check to see if center has been already used 
-				for(int point : points){
-					if(clusterIndex == point){
-						goodToGo = false; //Need new center
-					}
-				}
-			}
-			//If reached here, center hasn't been used
-			points[i] = clusterIndex;
-			//Assign data at random point to be a centroid
-			centroids[i][0] = data[clusterIndex][0];
-			centroids[i][1] = data[clusterIndex][1];
-		}
-		boolean converged = false; //Assume not converged
-		do{
-			//Assign each point to its closest center
-			if(assignNewClusters()){
-				//If true, assignments changed
-				//Recompute centers by averaging clustered points
-				computeNewCentroids();
-			} else {
-				//Assignments didn't change, no need to recompute centers
-				converged = true; //If assignments didn't change, the clusters should be converged
-			}
-		}while(!converged); //Check should be at the end
+            //Pick k clusters from data; Forgy Initialization is random datapoints
+            int[] points = new int[k]; //Makes sure multiple clusters don't have the same center
+            Arrays.fill(points, -1); // Initialize with -1 to avoid false collisions
+            int clusterIndex = 0; //Data point location for center
+            // init arrays
+            centroids = new double[k][2];
+            clusters = new int[data.length];
+
+            for(int i = 0; i < k; i++){ //Get k centers
+                boolean goodToGo = false; //Variable to ensure program doesn't move unless center is valid
+                while(!goodToGo){
+                    goodToGo = true; //Assume center is valid
+                    clusterIndex = random.nextInt(0, data.length); //Get random point of data
+                    //Check to see if center has been already used 
+                    for(int point : points){
+                        if(clusterIndex == point){
+                            goodToGo = false; //Need new center
+                        }
+                    }
+                }
+                //If reached here, center hasn't been used
+                points[i] = clusterIndex;
+                //Assign data at random point to be a centroid
+                centroids[i][0] = data[clusterIndex][0];
+                centroids[i][1] = data[clusterIndex][1];
+            }
+            Boolean converged = false; //Assume not converged
+            int iterationLimit = 100; //Limit to make sure it doesn't go crazy
+            int iterations = 0;
+            do{
+                //Assign each point to its closest center
+                if(assignNewClusters()){
+                    //If true, assignments changed
+                    //Recompute centers by averaging clustered points
+                    computeNewCentroids();
+                    iterations++;
+                    if(iterations >= iterationLimit){
+                        converged = true; //Assume we're stuck in a loop somewhere and forcibly exit
+                    }
+                } else {
+                    //Assignments didn't change, no need to recompute centers
+                    converged = true; //If assignments didn't change, the clusters should be converged
+                }
+            }while(!converged); //Check should be at the end
+
+            // create clustering result
+            clusteringResults[runs] = new ClusteringResult();
+        }
+        // figure out lowest WCSS index
+        int lowestWCSSIndex = 0;
+        for (int runs = 0; runs < clusteringResults.length; runs++) {
+            if (clusteringResults[runs].wcss < clusteringResults[lowestWCSSIndex].wcss) {
+                lowestWCSSIndex = runs;
+            }
+        }
+        // given lowest, update instance variables to that of the lowest wcss
+        System.out.println(lowestWCSSIndex);
+        this.centroids = clusteringResults[lowestWCSSIndex].finalCentroids;
+        this.clusters = clusteringResults[lowestWCSSIndex].finalClusters;
+        
 	}
 	
 	/**
@@ -383,11 +410,28 @@ public class KMeansClusterer {
 				iter = values.get(i);
 		}
 		
-		KMeansClusterer km = new KMeansClusterer();
+		KMeansClusterer2 km = new KMeansClusterer2();
 		km.setKRange(kMin, kMax);
 		km.setIter(iter);
 		km.setData(km.readData(infile));
 		km.kMeansCluster();
 		km.writeClusterData(outfile);
 	}
+
+    // important info for each clustering group
+    public class ClusteringResult {
+        double wcss;
+        double[][] finalData;
+        double[][] finalCentroids;
+        int[] finalClusters;
+
+        ClusteringResult() {
+            this.wcss = getWCSS();
+            System.out.println(getWCSS());
+            this.finalData = data;
+            this.finalCentroids = centroids;
+            this.finalClusters = clusters;
+        }
+    }
+
 }
