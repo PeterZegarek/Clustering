@@ -252,52 +252,56 @@ public class KMeansClusterer2 {
         clusteringResults = new ClusteringResult[iter];
         // run iter amount of times and store clustering result
         for (int runs = 0; runs < iter; runs++) {
-            // typical kMeansCluster algo
-
-            //Pick k clusters from data; Forgy Initialization is random datapoints
-            int[] points = new int[k]; //Makes sure multiple clusters don't have the same center
-            Arrays.fill(points, -1); // Initialize with -1 to avoid false collisions
-            int clusterIndex = 0; //Data point location for center
+            //pick k clusters from data
+            int[] points = new int[k]; 
+			// initialize with -1 to avoid false collisions
+            Arrays.fill(points, -1); 
+            // data point location for center
+			int clusterIndex = 0; 
             // init arrays
             centroids = new double[k][2];
             clusters = new int[data.length];
 
-            for(int i = 0; i < k; i++){ //Get k centers
-                boolean goodToGo = false; //Variable to ensure program doesn't move unless center is valid
+			 // get k centers
+            for(int i = 0; i < k; i++){
+				// variable to ensure program doesn't move unless center is valid
+                boolean goodToGo = false; 
                 while(!goodToGo){
-                    goodToGo = true; //Assume center is valid
-                    clusterIndex = random.nextInt(0, data.length); //Get random point of data
-                    //Check to see if center has been already used 
+                    goodToGo = true; 
+					 //get random point of data
+                    clusterIndex = random.nextInt(0, data.length);
+                    //check to see if center has been already used 
                     for(int point : points){
                         if(clusterIndex == point){
                             goodToGo = false; //Need new center
                         }
                     }
                 }
-                //If reached here, center hasn't been used
+                //if reached here, center hasn't been used
                 points[i] = clusterIndex;
-                //Assign data at random point to be a centroid
+                // assign data at random point to be a centroid
                 centroids[i][0] = data[clusterIndex][0];
                 centroids[i][1] = data[clusterIndex][1];
             }
-            Boolean converged = false; //Assume not converged
-            int iterationLimit = 100; //Limit to make sure it doesn't go crazy
+			//assume not converged
+            Boolean converged = false; 
+			//limit to make sure it doesn't go crazy
+            int iterationLimit = 100; 
             int iterations = 0;
             do{
-                //Assign each point to its closest center
+                //assign each point to its closest center
                 if(assignNewClusters()){
-                    //If true, assignments changed
-                    //Recompute centers by averaging clustered points
+                    //if true, assignments changed
                     computeNewCentroids();
                     iterations++;
                     if(iterations >= iterationLimit){
-                        converged = true; //Assume we're stuck in a loop somewhere and forcibly exit
+                        converged = true; //assume we're stuck in a loop somewhere and exit outta there
                     }
                 } else {
                     //Assignments didn't change, no need to recompute centers
-                    converged = true; //If assignments didn't change, the clusters should be converged
+                    converged = true; 
                 }
-            }while(!converged); //Check should be at the end
+            }while(!converged); 
 
             // create clustering result
             clusteringResults[runs] = new ClusteringResult();
