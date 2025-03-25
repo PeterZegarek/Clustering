@@ -3,17 +3,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
-
 /**
- * KMeansClusterer.java - a JUnit-testable interface for the Model AI Assignments k-Means Clustering exercises.
- * @author Todd W. Neller
+ * KMeansClustererAugmented.java - selects the best k using a simplified gap statistic.
  */
-public class KMeansClusterer2 {
-	private int dim; // the number of dimensions in the data
+public class KMeansClustererAugmented {
+    private int dim; // the number of dimensions in the data
 	private int k, kMin, kMax; // the allowable range of the of clusters
 	private int iter; // the number of k-Means Clustering iterations per k
 	private double[][] data; // the data vectors for clustering
@@ -21,10 +18,7 @@ public class KMeansClusterer2 {
 	private int[] clusters; // assigned clusters for each data point
 	private Random random = new Random();
 
-    // store the clustering results
-    private ClusteringResult[] clusteringResults;
-
-	/**
+    /**
 	 * Read the specified data input format from the given file and return a double[][] with each row being a data point and each column being a dimension of the data.
 	 * @param filename the data input source file
 	 * @return a double[][] with each row being a data point and each column being a dimension of the data
@@ -62,16 +56,16 @@ public class KMeansClusterer2 {
 		return null;
 	}
 
-	/**
+    /**
 	 * Set the given data as the clustering data as a double[][] with each row being a data point and each column being a dimension of the data.
 	 * @param data the given clustering data
 	 */
-	public void setData(double[][] data) {
-		this.data = data;		
-		this.dim = data[0].length;
-	}
+    public void setData(double[][] data) {
+        this.data = data;
+        this.dim = data[0].length;
+    }
 
-	/**
+    /**
 	 * Return the clustering data as a double[][] with each row being a data point and each column being a dimension of the data.
 	 * @return the clustering data
 	 */
@@ -79,7 +73,7 @@ public class KMeansClusterer2 {
 		return data;
 	}
 
-	/**
+    /**
 	 * Return the number of dimensions of the clustering data.
 	 * @return the number of dimensions of the clustering data
 	 */
@@ -87,35 +81,26 @@ public class KMeansClusterer2 {
 		return dim;
 	}
 
-	/**
+    /**
 	 * Set the minimum and maximum allowable number of clusters k.  If a single given k is to be used, then kMin == kMax.  If kMin &lt; kMax, then all k from kMin to kMax inclusive will be
 	 * compared using the gap statistic.  The minimum WCSS run of the k with the maximum gap will be the result.
 	 * @param kMin minimum number of clusters
 	 * @param kMax maximum number of clusters
 	 */
-	public void setKRange(int kMin, int kMax) {
-		this.kMin = kMin; 
-		this.kMax = kMax;
-		this.k = kMin;
-	}
-	
-	/**
+    public void setKRange(int kMin, int kMax) {
+        this.kMin = kMin;
+        this.kMax = kMax;
+    }
+
+    /**
 	 * Return the number of clusters k.  After calling kMeansCluster() with a range from kMin to kMax, this value will be the k yielding the maximum gap statistic.
 	 * @return the number of clusters k.
 	 */
 	public int getK() {
 		return k;
 	}
-	
-	/**
-	 * Set the number of iterations to perform k-Means Clustering and choose the minimum WCSS result.
-	 * @param iter the number of iterations to perform k-Means Clustering
-	 */
-	public void setIter(int iter) {
-		this.iter = iter;	
-	}
 
-	/**
+    /**
 	 * Return the array of centroids indexed by cluster number and centroid dimension.
 	 * @return the array of centroids indexed by cluster number and centroid dimension.
 	 */
@@ -123,34 +108,41 @@ public class KMeansClusterer2 {
 		return centroids;
 	}
 
-	/**
+    /**
 	 * Return a parallel array of cluster assignments such that data[i] belongs to the cluster clusters[i] with centroid centroids[clusters[i]].
 	 * @return a parallel array of cluster assignments
 	 */
 	public int[] getClusters() {
 		return clusters;
 	}
+    
+    /**
+	 * Set the number of iterations to perform k-Means Clustering and choose the minimum WCSS result.
+	 * @param iter the number of iterations to perform k-Means Clustering
+	 */
+    public void setIter(int iter) {
+        this.iter = iter;
+    }
 
-	/**
+    /**
 	 * Return the Euclidean distance between the two given point vectors.
 	 * @param p1 point vector 1
 	 * @param p2 point vector 2
 	 * @return the Euclidean distance between the two given point vectors
 	 */
-	private double getDistance(double[] p1, double[] p2) {
-		double sumOfSquareDiffs = 0;
-		for (int i = 0; i < p1.length; i++) {
-			double diff = p1[i] - p2[i];
-			sumOfSquareDiffs += diff * diff;
-		}
-		return Math.sqrt(sumOfSquareDiffs);
-	}
-	
-	/**
+    private double getDistance(double[] p1, double[] p2) {
+        double sumOfSquareDiffs = 0;
+        for (int i = 0; i < p1.length; i++) {
+            double diff = p1[i] - p2[i];
+            sumOfSquareDiffs += diff * diff;
+        }
+        return Math.sqrt(sumOfSquareDiffs);
+    }
+    /**
 	 * Return the minimum Within-Clusters Sum-of-Squares measure for the chosen k number of clusters.
 	 * @return the minimum Within-Clusters Sum-of-Squares measure
 	 */
-	public double getWCSS() {
+    public double getWCSS() {
 		double totalWCSS = 0.0;
 		
 		// creates an array to store wcss (within cluster sum of squares) for each cluster
@@ -179,9 +171,8 @@ public class KMeansClusterer2 {
 		
 		return totalWCSS;
 	}
-	
 
-	/**
+    /**
 	 * Assign each data point to the nearest centroid and return whether or not any cluster assignments changed.
 	 * @return whether or not any cluster assignments changed
 	 */
@@ -209,7 +200,8 @@ public class KMeansClusterer2 {
 		return changesMade;
 	}
 	
-	/**
+
+    /**
 	 * Compute new centroids at the mean point of each cluster of points.
 	 */
 	public void computeNewCentroids() 
@@ -241,89 +233,82 @@ public class KMeansClusterer2 {
 		centroids = newCentroids;
 	}
 
-	
-	/**
-	 * Perform k-means clustering with Forgy initialization and return the 0-based cluster assignments for corresponding data points.
-	 * If iter > 1, choose the clustering that minimizes the WCSS measure.
-	 * If kMin > kMax, select the k maximizing the gap statistic using 100 uniform samples uniformly across given data ranges.
-	 */
-	public void kMeansCluster() {
-        // create array of clustering results
-        clusteringResults = new ClusteringResult[iter];
-        // run iter amount of times and store clustering result
-        for (int runs = 0; runs < iter; runs++) {
-            //pick k clusters from data
-            int[] points = new int[k]; 
-			// initialize with -1 to avoid false collisions
-            Arrays.fill(points, -1); 
-            // data point location for center
-			int clusterIndex = 0; 
-            // init arrays
-            centroids = new double[k][2];
-            clusters = new int[data.length];
 
-			 // get k centers
-            for(int i = 0; i < k; i++){
-				// variable to ensure program doesn't move unless center is valid
-                boolean goodToGo = false; 
-                while(!goodToGo){
-                    goodToGo = true; 
-					 //get random point of data
-                    clusterIndex = random.nextInt(0, data.length);
-                    //check to see if center has been already used 
-                    for(int point : points){
-                        if(clusterIndex == point){
-                            goodToGo = false; //Need new center
-                        }
+    /**
+     * runs k-means clustering over a range of k values and selects the best one
+     * using a simplified gap statistic (based on negative log of WCSS).
+     */
+    public void kMeansCluster() {
+        double bestGap = Double.NEGATIVE_INFINITY;
+        int bestK = kMin;
+        double bestWCSS = Double.MAX_VALUE;
+
+        // try each k value in the specified range
+        for (int currentK = kMin; currentK <= kMax; currentK++) {
+            this.k = currentK;
+            double minWCSS = Double.MAX_VALUE;
+
+            // run clustering multiple times to get best result for this k
+            for (int run = 0; run < iter; run++) {
+                initializeCentroids();
+
+                // run k-means until convergence or max iterations
+                boolean converged = false;
+                int iterationLimit = 100;
+                int iterations = 0;
+
+                while (!converged && iterations < iterationLimit) {
+                    if (assignNewClusters()) {
+                        computeNewCentroids();
+                        iterations++;
+                    } else {
+                        converged = true;
                     }
                 }
-                //if reached here, center hasn't been used
-                points[i] = clusterIndex;
-                // assign data at random point to be a centroid
-                centroids[i][0] = data[clusterIndex][0];
-                centroids[i][1] = data[clusterIndex][1];
-            }
-			//assume not converged
-            Boolean converged = false; 
-			//limit to make sure it doesn't go crazy
-            int iterationLimit = 100; 
-            int iterations = 0;
-            do{
-                //assign each point to its closest center
-                if(assignNewClusters()){
-                    //if true, assignments changed
-                    computeNewCentroids();
-                    iterations++;
-                    if(iterations >= iterationLimit){
-                        converged = true; //assume we're stuck in a loop somewhere and exit outta there
-                    }
-                } else {
-                    //Assignments didn't change, no need to recompute centers
-                    converged = true; 
-                }
-            }while(!converged); 
 
-            // create clustering result
-            clusteringResults[runs] = new ClusteringResult();
-        }
-        // figure out lowest WCSS index
-        int lowestWCSSIndex = 0;
-        for (int runs = 0; runs < clusteringResults.length; runs++) {
-            if (clusteringResults[runs].wcss < clusteringResults[lowestWCSSIndex].wcss) {
-                lowestWCSSIndex = runs;
+                double wcss = getWCSS();
+                if (wcss < minWCSS) {
+                    minWCSS = wcss;
+                }
+            }
+
+            // compute simplified gap statistic (lower WCSS is better)
+            double gap = computeGapStatistic(minWCSS);
+            if (gap > bestGap) {
+                bestGap = gap;
+                bestK = currentK;
+                bestWCSS = minWCSS;
             }
         }
-        // given lowest, update instance variables to that of the lowest wcss
-        this.centroids = clusteringResults[lowestWCSSIndex].finalCentroids;
-        this.clusters = clusteringResults[lowestWCSSIndex].finalClusters;
-        
-	}
-	
-	/**
+
+        this.k = bestK;
+        System.out.println("Optimal k: " + bestK + " with WCSS: " + bestWCSS);
+    }
+
+    private void initializeCentroids() {
+        centroids = new double[k][dim];
+        clusters = new int[data.length];
+        boolean[] used = new boolean[data.length];
+
+        for (int i = 0; i < k; i++) {
+            int index;
+            do {
+                index = random.nextInt(data.length);
+            } while (used[index]);
+            used[index] = true;
+            centroids[i] = Arrays.copyOf(data[index], dim);
+        }
+    }
+
+    private double computeGapStatistic(double wcss) {
+        return -Math.log(wcss);
+    }
+
+    /**
 	 * Export cluster data in the given data output format to the file provided.
 	 * @param filename the destination file
 	 */
-	public void writeClusterData(String filename) {
+    public void writeClusterData(String filename) {
 		try{
 			FileWriter out = new FileWriter(filename);
 			
@@ -351,7 +336,7 @@ public class KMeansClusterer2 {
 		}
 	}
 
-	/**
+    /**
 	 * Read UNIX-style command line parameters to as to specify the type of k-Means Clustering algorithm applied to the formatted data specified.
 	 * "-k int" specifies both the minimum and maximum number of clusters. "-kmin int" specifies the minimum number of clusters. "-kmax int" specifies the maximum number of clusters. 
 	 * "-iter int" specifies the number of times k-Means Clustering is performed in iteration to find a lower local minimum.
@@ -435,5 +420,4 @@ public class KMeansClusterer2 {
             this.finalClusters = clusters;
         }
     }
-
 }
