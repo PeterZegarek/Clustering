@@ -415,7 +415,7 @@ public class KMeansClustererAugmented {
 				iter = values.get(i);
 		}
 		
-		KMeansClusterer2 km = new KMeansClusterer2();
+		KMeansClustererAugmented km = new KMeansClustererAugmented();
 		km.setKRange(kMin, kMax);
 		km.setIter(iter);
 		km.setData(km.readData(infile));
