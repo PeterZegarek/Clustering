@@ -242,12 +242,16 @@ public class KMeansClustererAugmented {
         double bestGap = Double.NEGATIVE_INFINITY;
         int bestK = kMin;
         double bestWCSS = Double.MAX_VALUE;
-
+        double[][] bestCentroids = null;
+        int[] bestClusters = null;
+    
         // try each k value in the specified range
         for (int currentK = kMin; currentK <= kMax; currentK++) {
             this.k = currentK;
             double minWCSS = Double.MAX_VALUE;
-
+            double[][] currentBestCentroids = null;
+            int[] currentBestClusters = null;
+    
             // run clustering multiple times to get best result for this k
             for (int run = 0; run < iter; run++) {
                 initializeCentroids();
@@ -256,7 +260,7 @@ public class KMeansClustererAugmented {
                 boolean converged = false;
                 int iterationLimit = 100;
                 int iterations = 0;
-
+    
                 while (!converged && iterations < iterationLimit) {
                     if (assignNewClusters()) {
                         computeNewCentroids();
@@ -265,23 +269,36 @@ public class KMeansClustererAugmented {
                         converged = true;
                     }
                 }
-
+    
                 double wcss = getWCSS();
                 if (wcss < minWCSS) {
                     minWCSS = wcss;
+    
+                    // copy current best centroids and cluster assignments
+                    currentBestCentroids = new double[k][dim];
+                    for (int i = 0; i < k; i++)
+                        currentBestCentroids[i] = Arrays.copyOf(centroids[i], dim);
+    
+                    currentBestClusters = Arrays.copyOf(clusters, clusters.length);
                 }
             }
-
+    
             // compute simplified gap statistic (lower WCSS is better)
             double gap = computeGapStatistic(minWCSS);
             if (gap > bestGap) {
                 bestGap = gap;
                 bestK = currentK;
                 bestWCSS = minWCSS;
+    
+                // store the best result so far
+                bestCentroids = currentBestCentroids;
+                bestClusters = currentBestClusters;
             }
         }
-
+    
         this.k = bestK;
+        this.centroids = bestCentroids;
+        this.clusters = bestClusters;
         System.out.println("Optimal k: " + bestK + " with WCSS: " + bestWCSS);
     }
 
