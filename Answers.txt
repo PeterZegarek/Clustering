@@ -1,9 +1,25 @@
 Question 1:
     1a. The k-means algorithm makes the assumptions that all the data is a double, each line of data is of the same dimension, there is a
-    predifined number of clusters beforehand, and Euclidean distance can be calculated from the data.
+    predifined number of clusters beforehand, and Euclidean distance can be calculated from the data. In terms of more general k-means
+    assumptions, it assumes that clusters are spherical in shape, and the 'distance' of the cluster is about the same in every direction.
+    Also, for every cluster, the distribution of points around the center should be about the same, and the clusters should be roughly
+    the same size.
     1b. 
-    1c.
-    1d. 
+        Always Succeed - bullseye2, diffdensity2, diffstddev2, easygaussian1, easygaussian2, easygaussian3, easygaussian5, hardgaussian1,
+        hardgaussian2, hardgaussian3, hardgaussian5, hardgaussian8
+        Sometimes Succeed - easygaussian4, easygaussian6, easygaussian7, easygaussian9, hardgaussian4, hardgaussian6, hardgaussian7
+        Never Succeed - easygaussian8
+    1c. The ones that sometimes succeed and never succeed tend to have a higher number of clusters. Because they all have 100 data points,
+    more clusters would mean that the size of clusters are fairly small. When this happens, the randomly picked centroids are more important
+    to determining where the clusters are formed. So in these cases, some assumptions can be violated:
+        i. Clusters are spherical. With many clusters, it may be possible that the ideal clusters don't all have a spherical shape.
+        ii. The 'distance' of the cluster is about the same in every direction. Same as the one before, some clusters may not have that
+        uniform shape if there are too many of them.
+        iii. Clusters should be roughly the same size. Depending on the spread of data, some clusters should be significantly larger
+        or smaller than others for it to make sense. 
+    1d. Yes, K-means clustering can fail even if assumptions are not violated. The forgy initialization of the algorithm leads to random
+    data points being picked for the initial centroids. In soem cases, this can skew the clusters of data, leading to unideal clusters.
+    The data can also have outliers. This can significantly affect the centroids, leading to more clusters that aren't ideal.
 
 Question 2:
     2a. The iterated use allows with its randomness allows us to see more varied and possible better results with each iteration.  The more iterations there are the more of a chance of better results because of the randomness. 
