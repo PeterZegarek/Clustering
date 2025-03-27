@@ -22,6 +22,7 @@ Question 1:
     The data can also have outliers. This can significantly affect the centroids, leading to more clusters that aren't ideal.
 
 Question 2:
-    2a. The iterated use allows with its randomness allows us to see more varied and possible better results with each iteration.  The more iterations there are the more of a chance of better results because of the randomness. 
+    2a. The iterated use with its randomness allows us to see more varied and possible better results with each iteration. The more iterations there are the more of a chance of better results because of the randomness of the starting point.
+    Since the clusters start from random points, they can converge in different places (like local maximums, conceptually). By running this multiple times and taking the lowest WCSS, we can output the highest quality clusters.
     2b. The iterated sample run appears to succeed for bullseye2, diffdensity2, diffstddev2, easygaussian1, easygaussian2, easygaussian3, easygaussian4, hardgaussian1, hardgaussian2, hardgaussian3, hardgaussian4, hardgaussian5, and stretched2.
-    2c. This iterated approach helps different density, differnet standard deviation, stretched, and sometime gaussian problems.
+    2c. This iterated approach helps different density, different standard deviation, stretched, and sometimes gaussian problems.
