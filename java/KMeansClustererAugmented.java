@@ -252,6 +252,7 @@ public class KMeansClustererAugmented {
         double[][] bestCentroids = null;
         int[] bestClusters = null;
 
+		//Creates a databack up of Data so Data can go back to normal
 		dataBackup = new double[data.length][data[0].length];
 		for (int i = 0; i < data.length; i++) {
 			dataBackup[i] = Arrays.copyOf(data[i], data[i].length);
@@ -338,20 +339,15 @@ public class KMeansClustererAugmented {
 
 
 				//Run KCluster on the randomized dataset
-
-				//Rewrite kmeans from above and then store in an array of objects to have the data
-				//Maybe just save the WCSS of each instead of whole dataset in an array
-
 				initializeCentroids();
-
-
-				//Running kmeans once on dataset
 				assignNewClusters();
 				computeNewCentroids();
 
+				//Gets the total of all the log of the WCSS
 				avgRandWCSS += Math.log(getWCSS());
 			}
 
+			//Divides by length of 100 datasets to get the average
 			avgRandWCSS /= 100;
 
 
