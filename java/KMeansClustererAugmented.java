@@ -373,7 +373,7 @@ public class KMeansClustererAugmented {
         this.k = bestK;
         this.centroids = bestCentroids;
         this.clusters = bestClusters;
-        System.out.println("Optimal k: " + bestK + " with WCSS: " + bestWCSS);
+        System.out.println("Optimal k: " + bestK + " with WCSS: " + bestWCSS + " with GapK: " + bestGap);
     }
 
 	private void randomizeDataset(double minX, double minY, double maxX, double maxY)
