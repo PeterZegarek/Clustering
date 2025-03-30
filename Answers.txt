@@ -18,7 +18,7 @@ Question 1:
         iii. Clusters should be roughly the same size. Depending on the spread of data, some clusters should be significantly larger
         or smaller than others for it to make sense. 
     1d. Yes, K-means clustering can fail even if assumptions are not violated. The forgy initialization of the algorithm leads to random
-    data points being picked for the initial centroids. In soem cases, this can skew the clusters of data, leading to unideal clusters.
+    data points being picked for the initial centroids. In some cases, this can skew the clusters of data, leading to unideal clusters.
     The data can also have outliers. This can significantly affect the centroids, leading to more clusters that aren't ideal.
 
 Question 2:
@@ -26,3 +26,9 @@ Question 2:
     Since the clusters start from random points, they can converge in different places (like local maximums, conceptually). By running this multiple times and taking the lowest WCSS, we can output the highest quality clusters.
     2b. The iterated sample run appears to succeed for bullseye2, diffdensity2, diffstddev2, easygaussian1, easygaussian2, easygaussian3, easygaussian4, hardgaussian1, hardgaussian2, hardgaussian3, hardgaussian4, hardgaussian5, and stretched2.
     2c. This iterated approach helps different density, different standard deviation, stretched, and sometimes gaussian problems.
+
+Question 3:
+    3a. For each input file provided, run your program 8 times with kMin=2 and kMax=10 and iter=10. From each run, record the number of clusters k that yielded the maximum gap statistic in Columns J-Q of the spreadsheet.
+    3b. For which data set(s) does this technique consistently succeed in discerning the correct number of clusters?
+    3c. For which data set(s) does the discerned number of clusters vary from run to run?
+    3d. For which data set(s) does this technique consistently return the incorrect number of clusters? What do you observe about the nature of the data in these case(s)?
