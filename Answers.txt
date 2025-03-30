@@ -28,7 +28,14 @@ Question 2:
     2c. This iterated approach helps different densities, different standard deviations, stretched problems, and sometimes gaussian problems.
 
 Question 3:
-    3a. For each input file provided, run your program 8 times with kMin=2 and kMax=10 and iter=10. From each run, record the number of clusters k that yielded the maximum gap statistic in Columns J-Q of the spreadsheet.
-    3b. For which data set(s) does this technique consistently succeed in discerning the correct number of clusters?
-    3c. For which data set(s) does the discerned number of clusters vary from run to run?
-    3d. For which data set(s) does this technique consistently return the incorrect number of clusters? What do you observe about the nature of the data in these case(s)?
+    3a.https://quinnipiacuniversity-my.sharepoint.com/:x:/g/personal/cheffrece_quinnipiac_edu/EUI9FqfFJWBPuwMDYbAmHfUBiLb8daYFb6fz4pttFeJ5vg?e=qx7YBr
+    3b. In easygaussian2, easygaussian3, easygaussian4, easygaussian5, easygaussian6, hardgaussian3, hardgaussian4, the datasets are consistently producing the same number
+    of clusters across each run. 
+    3c. bullseye2, diffdensity2, diffstddev2, easygaussian1, easygaussian7, easygaussian8, easygaussian9, hardgaussian1, hardgaussian2, hardgaussian5, hardgaussian6,
+    hardgaussian7, hardgaussian8, hardgaussian9, and stretched2 all provide varied results from run to run. This is most significant in bullseye2, diffstddev2, hardgaussian1,
+    hardgaussian2, hardgaussian5, hardgaussian8, and hardgaussian9 which have 3 or more unique k's.
+    3d. i. bullseye2, diffdensity2, diffstddev2, easygaussian1, easygaussian8, easygaussian9, hardgaussian1, hardgaussian2, hardgaussian4, hardgaussian5, hardgaussian6, hardgaussian7, 
+        hardgaussian8, hardgaussian9, and streched2 all consistently returned the incorrect number of clusters, with some yielding the correct number in some runs but not in every run consistently. 
+        ii. Hard and stretched datasets tended to produce more variation with responses while easy datasets were more consistent in general. 
+
+
