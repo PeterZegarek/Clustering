@@ -18,6 +18,13 @@ public class KMeansClustererAugmented {
 	private int[] clusters; // assigned clusters for each data point
 	private Random random = new Random();
 
+
+	//To store the wcss of randomdataset
+
+	private double[][] dataBackup; //Backup of Data
+	//Array that holds each iterations of randomized data
+
+
     /**
 	 * Read the specified data input format from the given file and return a double[][] with each row being a data point and each column being a dimension of the data.
 	 * @param filename the data input source file
@@ -244,63 +251,135 @@ public class KMeansClustererAugmented {
         double bestWCSS = Double.MAX_VALUE;
         double[][] bestCentroids = null;
         int[] bestClusters = null;
-    
-        // try each k value in the specified range
-        for (int currentK = kMin; currentK <= kMax; currentK++) {
-            this.k = currentK;
-            double minWCSS = Double.MAX_VALUE;
-            double[][] currentBestCentroids = null;
-            int[] currentBestClusters = null;
-    
-            // run clustering multiple times to get best result for this k
-            for (int run = 0; run < iter; run++) {
-                initializeCentroids();
 
-                // run k-means until convergence or max iterations
-                boolean converged = false;
-                int iterationLimit = 100;
-                int iterations = 0;
-    
-                while (!converged && iterations < iterationLimit) {
-                    if (assignNewClusters()) {
-                        computeNewCentroids();
-                        iterations++;
-                    } else {
-                        converged = true;
-                    }
-                }
-    
-                double wcss = getWCSS();
-                if (wcss < minWCSS) {
-                    minWCSS = wcss;
-    
-                    // copy current best centroids and cluster assignments
-                    currentBestCentroids = new double[k][dim];
-                    for (int i = 0; i < k; i++)
-                        currentBestCentroids[i] = Arrays.copyOf(centroids[i], dim);
-    
-                    currentBestClusters = Arrays.copyOf(clusters, clusters.length);
-                }
-            }
-    
-            // compute simplified gap statistic (lower WCSS is better)
-            double gap = computeGapStatistic(minWCSS);
-            if (gap > bestGap) {
-                bestGap = gap;
-                bestK = currentK;
-                bestWCSS = minWCSS;
-    
-                // store the best result so far
-                bestCentroids = currentBestCentroids;
-                bestClusters = currentBestClusters;
-            }
-        }
-    
+		//Creates a databack up of Data so Data can go back to normal
+		dataBackup = new double[data.length][data[0].length];
+		for (int i = 0; i < data.length; i++) {
+			dataBackup[i] = Arrays.copyOf(data[i], data[i].length);
+		}
+
+		double minX = Double.MAX_VALUE;
+		double minY = Double.MAX_VALUE;
+		double maxX = Double.MIN_VALUE;
+		double maxY = Double.MIN_VALUE;
+
+		//Compute min and max of data
+		for(int i = 0; i < data.length; i++) {
+			if(data[i][0] < minX) {
+				minX = data[i][0];
+			}
+			if(data[i][1] < minY) {
+				minY = data[i][1];
+			}
+			if(data[i][0] > maxX) {
+				maxX = data[i][0];
+			}
+			if (data[i][1] > maxY) {
+				maxY = data[i][1];
+			}
+		}
+
+        // try each k value in the specified range
+		for (int currentK = kMin; currentK <= kMax; currentK++)
+		{
+			this.k = currentK;
+			double minWCSS = Double.MAX_VALUE;
+			double[][] currentBestCentroids = null;
+			int[] currentBestClusters = null;
+
+			//Set data back to normal data
+			for (int i = 0; i < dataBackup.length; i++) {
+				data[i] = Arrays.copyOf(dataBackup[i], dataBackup[i].length);
+			}
+
+			// run clustering multiple times to get best result for this k
+			for (int run = 0; run < iter; run++)
+			{
+				initializeCentroids();
+
+
+				// run k-means until convergence or max iterations
+				boolean converged = false;
+				int iterationLimit = 100;
+				int iterations = 0;
+
+				while (!converged && iterations < iterationLimit)
+				{
+					if (assignNewClusters())
+					{
+						computeNewCentroids();
+						iterations++;
+					} else
+					{
+						converged = true;
+					}
+				}
+
+				double wcss = getWCSS();
+				if (wcss < minWCSS)
+				{
+					minWCSS = wcss;
+
+					// copy current best centroids and cluster assignments
+					currentBestCentroids = new double[k][dim];
+					for (int i = 0; i < k; i++)
+						currentBestCentroids[i] = Arrays.copyOf(centroids[i], dim);
+
+					currentBestClusters = Arrays.copyOf(clusters, clusters.length);
+				}
+			}
+
+			double avgRandWCSS = 0;
+
+			//Creates 100 random datasets where each one gets kmean clustered once
+			for (int i = 0; i < 100; i++)
+			{
+				//Change data to have randomized data between kmin, kmax
+				randomizeDataset(minX, minY, maxX, maxY);
+
+
+				//Run KCluster on the randomized dataset
+				initializeCentroids();
+				assignNewClusters();
+				computeNewCentroids();
+
+				//Gets the total of all the log of the WCSS
+				avgRandWCSS += Math.log(getWCSS());
+			}
+
+			//Divides by length of 100 datasets to get the average
+			avgRandWCSS /= 100;
+
+
+			// compute simplified gap statistic higher GapK the better
+			double gap = computeGapStatistic(minWCSS, avgRandWCSS);
+			if (gap > bestGap)
+			{
+				bestGap = gap;
+				bestK = currentK;
+				bestWCSS = minWCSS;
+
+				// store the best result so far
+				bestCentroids = currentBestCentroids;
+				bestClusters = currentBestClusters;
+			}
+		}
+
+
         this.k = bestK;
         this.centroids = bestCentroids;
         this.clusters = bestClusters;
-        System.out.println("Optimal k: " + bestK + " with WCSS: " + bestWCSS);
+        System.out.println("Optimal k: " + bestK + " with WCSS: " + bestWCSS + " with GapK: " + bestGap);
     }
+
+	private void randomizeDataset(double minX, double minY, double maxX, double maxY)
+	{
+		for(int i = 0; i < data.length; i++)
+		{
+			data[i][0] = minX + (Math.random() * (maxX - minX));
+			data[i][1] = minY + (Math.random() * (maxY - minY));
+		}
+	}
 
     private void initializeCentroids() {
         centroids = new double[k][dim];
@@ -317,8 +396,8 @@ public class KMeansClustererAugmented {
         }
     }
 
-    private double computeGapStatistic(double wcss) {
-        return -Math.log(wcss);
+    private double computeGapStatistic(double wcss, double avgRandWCSS) {
+        return avgRandWCSS - Math.log(wcss);
     }
 
     /**
@@ -429,6 +508,7 @@ public class KMeansClustererAugmented {
         double[][] finalData;
         double[][] finalCentroids;
         int[] finalClusters;
+		double gapK;
 
         ClusteringResult() {
             this.wcss = getWCSS();

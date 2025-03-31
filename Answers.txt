@@ -18,10 +18,24 @@ Question 1:
         iii. Clusters should be roughly the same size. Depending on the spread of data, some clusters should be significantly larger
         or smaller than others for it to make sense. 
     1d. Yes, K-means clustering can fail even if assumptions are not violated. The forgy initialization of the algorithm leads to random
-    data points being picked for the initial centroids. In soem cases, this can skew the clusters of data, leading to unideal clusters.
+    data points being picked for the initial centroids. In some cases, this can skew the clusters of data, leading to unideal clusters.
     The data can also have outliers. This can significantly affect the centroids, leading to more clusters that aren't ideal.
 
 Question 2:
-    2a. The iterated use allows with its randomness allows us to see more varied and possible better results with each iteration.  The more iterations there are the more of a chance of better results because of the randomness. 
+    2a. The iterated use with its randomness allows us to see more varied and possible better results with each iteration. The more iterations there are, the more of a chance of better results due to the randomness of the starting point.
+    Since the clusters start from random points, they can converge in different places (like local maximums, conceptually). By running this multiple times and taking the lowest WCSS, we can output the highest quality clusters.
     2b. The iterated sample run appears to succeed for easygaussian9, hardgaussian1, hardgaussian4, hardgaussian6, hardgaussian8, and hardgaussian9.
     2c. This iterated approach helps the hard gaussian problems.
+    
+Question 3:
+    3a.https://quinnipiacuniversity-my.sharepoint.com/:x:/g/personal/cheffrece_quinnipiac_edu/EUI9FqfFJWBPuwMDYbAmHfUBiLb8daYFb6fz4pttFeJ5vg?e=qx7YBr
+    3b. In easygaussian2, easygaussian3, easygaussian4, easygaussian5, easygaussian6, hardgaussian3, hardgaussian4, the datasets are consistently producing the same number
+    of clusters across each run. 
+    3c. bullseye2, diffdensity2, diffstddev2, easygaussian1, easygaussian7, easygaussian8, easygaussian9, hardgaussian1, hardgaussian2, hardgaussian5, hardgaussian6,
+    hardgaussian7, hardgaussian8, hardgaussian9, and stretched2 all provide varied results from run to run. This is most significant in bullseye2, diffstddev2, hardgaussian1,
+    hardgaussian2, hardgaussian5, hardgaussian8, and hardgaussian9 which have 3 or more unique k's.
+    3d. i. bullseye2, diffdensity2, diffstddev2, easygaussian1, easygaussian8, easygaussian9, hardgaussian1, hardgaussian2, hardgaussian4, hardgaussian5, hardgaussian6, hardgaussian7, 
+        hardgaussian8, hardgaussian9, and streched2 all consistently returned the incorrect number of clusters, with some yielding the correct number in some runs but not in every run consistently. 
+        ii. Hard and stretched datasets tended to produce more variation with responses while easy datasets were more consistent in general. 
+
+
